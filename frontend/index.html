@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variant Analyzer - Analisi Varianti Genetiche</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧬 Variant Analyzer</h1>
+            <p class="subtitle">Sistema di Analisi Completa per Varianti Genetiche</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Input Form -->
+            <section class="card">
+                <h2>Inserisci Variante</h2>
+                <form id="variantForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="gene">Gene *</label>
+                            <input type="text" id="gene" placeholder="es. BRCA1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="chromosome">Cromosoma *</label>
+                            <input type="text" id="chromosome" placeholder="es. 17" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="position">Posizione *</label>
+                            <input type="number" id="position" placeholder="es. 43044295" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reference">Allele Riferimento *</label>
+                            <input type="text" id="reference" placeholder="es. G" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="alternate">Allele Alternativo *</label>
+                            <input type="text" id="alternate" placeholder="es. A" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="hgvs_c">HGVS Coding (opzionale)</label>
+                            <input type="text" id="hgvs_c" placeholder="es. c.5266dup">
+                        </div>
+                        <div class="form-group">
+                            <label for="hgvs_p">HGVS Protein (opzionale)</label>
+                            <input type="text" id="hgvs_p" placeholder="es. p.Gln1756fs">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                        Analizza Variante
+                    </button>
+                </form>
+
+                <!-- Example Buttons -->
+                <div class="examples">
+                    <p>Esempi rapidi:</p>
+                    <button class="btn btn-sm" onclick="loadExample('missense')">Missense</button>
+                    <button class="btn btn-sm" onclick="loadExample('frameshift')">Frameshift</button>
+                    <button class="btn btn-sm" onclick="loadExample('splicing')">Splicing</button>
+                    <button class="btn btn-sm" onclick="loadExample('synonymous')">Sinonima p.(=)</button>
+                    <button class="btn btn-sm" onclick="loadExample('utr5')">5'UTR</button>
+                    <button class="btn btn-sm" onclick="loadExample('utr3')">3'UTR</button>
+                </div>
+            </section>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="spinner" style="display: none;">
+                <div class="spinner-border"></div>
+                <p>Analisi in corso...</p>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsContainer" style="display: none;">
+                <!-- Summary Card -->
+                <section class="card">
+                    <h2>📊 Risultato Classificazione</h2>
+                    <div id="classificationSummary"></div>
+                </section>
+
+                <!-- Variant Info -->
+                <section class="card">
+                    <h2>🧬 Informazioni Variante</h2>
+                    <div id="variantInfo"></div>
+                </section>
+
+                <!-- In Silico Predictions -->
+                <section class="card">
+                    <h2>🔬 Predizioni In Silico</h2>
+                    <div id="predictions"></div>
+                </section>
+
+                <!-- Literature Evidence -->
+                <section class="card">
+                    <h2>📚 Evidenze da Letteratura</h2>
+                    <div id="literature"></div>
+                </section>
+
+                <!-- ACMG Classification -->
+                <section class="card">
+                    <h2>⚕️ Classificazione ACMG/AMP</h2>
+                    <div id="acmgClassification"></div>
+                </section>
+
+                <!-- External Links -->
+                <section class="card">
+                    <h2>🔗 Collegamenti Esterni</h2>
+                    <div id="externalLinks"></div>
+                </section>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+        </div>
+
+        <footer>
+            <p>Variant Analyzer v1.0.0 - Sistema di Analisi Varianti Genetiche</p>
+            <p><a href="/docs" target="_blank">API Documentation</a></p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

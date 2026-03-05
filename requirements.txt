@@ -1,0 +1,45 @@
+# Web Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+
+# Database
+sqlalchemy==2.0.25
+alembic==1.13.1
+psycopg2-binary==2.9.9
+
+# Bioinformatics
+biopython==1.83
+pyvcf3==1.0.3
+pysam==0.22.0
+myvariant==1.0.0
+pyliftover==0.4
+
+# External APIs
+requests==2.31.0
+aiohttp==3.9.1
+httpx==0.26.0
+
+# Data Processing
+pandas==2.2.0
+numpy==1.26.3
+
+# PubMed Integration
+biopython==1.83  # Includes Entrez for PubMed
+
+# Prediction Tools APIs
+# Note: Some tools require local installation or separate API keys
+# CADD, SIFT, PolyPhen, etc.
+
+# Caching
+redis==5.0.1
+
+# CORS
+fastapi-cors==0.0.6
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Testing
+pytest==7.4.4
+pytest-asyncio==0.23.3
