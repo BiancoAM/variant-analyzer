@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-from ..services.variant_service import VariantAnalysisService
+from services.variant_service import VariantAnalysisService
 
 # Load environment variables
 load_dotenv()

@@ -1,7 +1,7 @@
 from typing import Dict, Any, List
 import logging
 import re
-from ..predictors import (
+from predictors import (
     MissensePredictorAggregator,
     SplicingPredictorAggregator,
     IndelPredictorAggregator,
@@ -9,8 +9,8 @@ from ..predictors import (
     UTRPredictorAggregator,
     MobiDetailsPredictor
 )
-from .pubmed_service import PubMedService
-from .myvariant_service import MyVariantService
+from services.pubmed_service import PubMedService
+from services.myvariant_service import MyVariantService
 
 logger = logging.getLogger(__name__)
 
