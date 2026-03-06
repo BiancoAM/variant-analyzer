@@ -493,8 +493,8 @@ class VariantAnalysisService:
                 evidence["benign"].append({
                     "code": "BP7",
                     "description": (
-                        "Variante sinonima senza impatto predetto su splicing "
-                        "(SpliceAI e predittori in silico non suggeriscono alterazione)"
+                        "Synonymous variant with no predicted splicing impact "
+                        "(SpliceAI and in silico predictors do not suggest alteration)"
                     ),
                     "strength": "Supporting"
                 })
@@ -502,8 +502,8 @@ class VariantAnalysisService:
                 evidence["pathogenic"].append({
                     "code": "PP3",
                     "description": (
-                        f"Variante sinonima con possibile impatto su splicing "
-                        f"({splice_count} predittori suggeriscono alterazione) - RNA studies raccomandati"
+                        f"Synonymous variant with possible splicing impact "
+                        f"({splice_count} predictors suggest alteration) - RNA studies recommended"
                     ),
                     "strength": "Supporting"
                 })
@@ -520,7 +520,7 @@ class VariantAnalysisService:
                     evidence["pathogenic"].append({
                         "code": code,
                         "description": (
-                            f"Variante UTR con evidenza regolatoria (RegulomeDB): {criterion}"
+                            f"UTR variant with regulatory evidence (RegulomeDB): {criterion}"
                         ),
                         "strength": "Supporting"
                     })
@@ -528,7 +528,7 @@ class VariantAnalysisService:
                     evidence["benign"].append({
                         "code": code,
                         "description": (
-                            f"Variante UTR con bassa evidenza regolatoria (RegulomeDB): {criterion}"
+                            f"UTR variant with low regulatory evidence (RegulomeDB): {criterion}"
                         ),
                         "strength": "Supporting"
                     })
@@ -660,26 +660,26 @@ class VariantAnalysisService:
 
         if variant_type == 'SNV_SYNONYMOUS':
             summary["recommendations"].append(
-                "Analizzare ESE/ESS con ESEfinder e HEXplorer (impatto su splicing)"
+                "Analyze ESE/ESS motifs with ESEfinder and HEXplorer (splicing impact)"
             )
             summary["recommendations"].append(
-                "Se vicino a sito di splicing (±10bp): RNA studies raccomandati"
+                "If near splice site (±10bp): RNA studies recommended"
             )
 
         if variant_type == 'UTR_5':
             summary["recommendations"].append(
-                "5'UTR: verificare creazione/disruzione uORF con UTRAnnotator (VEP)"
+                "5'UTR: check uORF creation/disruption with UTRAnnotator (VEP)"
             )
             summary["recommendations"].append(
-                "Reporter assay (luciferasi) per valutare impatto su traduzione"
+                "Luciferase reporter assay to assess translational impact"
             )
 
         if variant_type == 'UTR_3':
             summary["recommendations"].append(
-                "3'UTR: verificare seed region miRNA con TargetScan e miRDB"
+                "3'UTR: check miRNA seed region with TargetScan and miRDB"
             )
             summary["recommendations"].append(
-                "Analizzare binding RBP con RBPmap e segnali poliadenilazione con PolyASite"
+                "Analyze RBP binding with RBPmap and polyadenylation signals with PolyASite"
             )
 
         summary["recommendations"].append("Review segregation data if family members available")

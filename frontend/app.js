@@ -113,7 +113,7 @@ document.getElementById('variantForm').addEventListener('submit', async (e) => {
 
     } catch (error) {
         console.error('Error:', error);
-        showError(`Errore nell'analisi: ${error.message}`);
+        showError(`Analysis error: ${error.message}`);
     } finally {
         hideLoading();
     }
@@ -178,11 +178,11 @@ function displayClassificationSummary(data) {
             ${classification}
         </div>
         <div style="margin-top: 20px;">
-            <h3>Riepilogo</h3>
+            <h3>Summary</h3>
     `;
 
     if (summary.key_findings && summary.key_findings.length > 0) {
-        html += '<h4 style="margin-top: 15px; color: var(--text-secondary);">Risultati Principali:</h4><ul>';
+        html += '<h4 style="margin-top: 15px; color: var(--text-secondary);">Key Findings:</h4><ul>';
         summary.key_findings.forEach(finding => {
             html += `<li>${finding}</li>`;
         });
@@ -190,7 +190,7 @@ function displayClassificationSummary(data) {
     }
 
     if (summary.recommendations && summary.recommendations.length > 0) {
-        html += '<h4 style="margin-top: 15px; color: var(--text-secondary);">Raccomandazioni:</h4><ul>';
+        html += '<h4 style="margin-top: 15px; color: var(--text-secondary);">Recommendations:</h4><ul>';
         summary.recommendations.forEach(rec => {
             html += `<li>${rec}</li>`;
         });
@@ -212,15 +212,15 @@ function displayVariantInfo(variant, populationData) {
                 <div class="info-value">${variant.gene || 'N/A'}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Posizione Genomica</div>
+                <div class="info-label">Genomic Position</div>
                 <div class="info-value">chr${variant.chromosome}:${variant.position}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Cambiamento</div>
+                <div class="info-label">Change</div>
                 <div class="info-value">${variant.reference} → ${variant.alternate}</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Tipo Variante</div>
+                <div class="info-label">Variant Type</div>
                 <div class="info-value"><span class="variant-type">${variant.variant_type || 'Unknown'}</span></div>
             </div>
     `;
@@ -296,7 +296,7 @@ function displayPredictions(predictions, populationData) {
 
     // Real prediction scores from MyVariant (dbNSFP + CADD)
     if (popData.found && (popData.sift_score || popData.polyphen2_score || popData.cadd_phred || popData.revel_score)) {
-        html += '<h3>🎯 Predizioni da Database (Valori Reali)</h3><div class="prediction-grid">';
+        html += '<h3>🎯 Database Predictions (Real Values)</h3><div class="prediction-grid">';
 
         // SIFT
         if (popData.sift_score !== null && popData.sift_score !== undefined) {
@@ -306,8 +306,8 @@ function displayPredictions(predictions, populationData) {
                     <h4>SIFT</h4>
                     <div class="prediction-score" style="color: ${siftColor};">${popData.sift_score.toFixed(3)}</div>
                     <div><strong>Predizione:</strong> ${popData.sift_prediction || (popData.sift_score <= 0.05 ? 'Deleterious' : 'Tolerated')}</div>
-                    <div style="margin-top: 8px; font-size: 0.9rem;">≤0.05 = dannosa</div>
-                    <div style="margin-top: 10px;"><a href="https://sift.bii.a-star.edu.sg/" target="_blank" style="color: var(--primary-color);">Vai al tool →</a></div>
+                    <div style="margin-top: 8px; font-size: 0.9rem;">≤0.05 = deleterious</div>
+                    <div style="margin-top: 10px;"><a href="https://sift.bii.a-star.edu.sg/" target="_blank" style="color: var(--primary-color);">Go to tool →</a></div>
                 </div>
             `;
         }
@@ -321,7 +321,7 @@ function displayPredictions(predictions, populationData) {
                     <div class="prediction-score" style="color: ${polyphenColor};">${popData.polyphen2_score.toFixed(3)}</div>
                     <div><strong>Predizione:</strong> ${popData.polyphen2_prediction || (popData.polyphen2_score >= 0.85 ? 'Probably damaging' : popData.polyphen2_score >= 0.15 ? 'Possibly damaging' : 'Benign')}</div>
                     <div style="margin-top: 8px; font-size: 0.9rem;">>0.85 = probably damaging</div>
-                    <div style="margin-top: 10px;"><a href="http://genetics.bwh.harvard.edu/pph2/" target="_blank" style="color: var(--primary-color);">Vai al tool →</a></div>
+                    <div style="margin-top: 10px;"><a href="http://genetics.bwh.harvard.edu/pph2/" target="_blank" style="color: var(--primary-color);">Go to tool →</a></div>
                 </div>
             `;
         }
@@ -335,7 +335,7 @@ function displayPredictions(predictions, populationData) {
                     <div class="prediction-score" style="color: ${caddColor};">PHRED: ${popData.cadd_phred.toFixed(1)}</div>
                     ${popData.cadd_raw ? `<div>Raw: ${popData.cadd_raw.toFixed(3)}</div>` : ''}
                     <div style="margin-top: 8px; font-size: 0.9rem;">${popData.cadd_interpretation || '>20 = top 1% deleterious'}</div>
-                    <div style="margin-top: 10px;"><a href="https://cadd.gs.washington.edu/" target="_blank" style="color: var(--primary-color);">Vai al tool →</a></div>
+                    <div style="margin-top: 10px;"><a href="https://cadd.gs.washington.edu/" target="_blank" style="color: var(--primary-color);">Go to tool →</a></div>
                 </div>
             `;
         }
@@ -349,7 +349,7 @@ function displayPredictions(predictions, populationData) {
                     <div class="prediction-score" style="color: ${revelColor};">${popData.revel_score.toFixed(3)}</div>
                     <div><strong>Predizione:</strong> ${popData.revel_score >= 0.75 ? 'Pathogenic' : popData.revel_score >= 0.5 ? 'Likely pathogenic' : 'Uncertain/Benign'}</div>
                     <div style="margin-top: 8px; font-size: 0.9rem;">>0.5 = likely pathogenic</div>
-                    <div style="margin-top: 10px;"><a href="https://sites.google.com/site/revelgenomics/" target="_blank" style="color: var(--primary-color);">Vai al tool →</a></div>
+                    <div style="margin-top: 10px;"><a href="https://sites.google.com/site/revelgenomics/" target="_blank" style="color: var(--primary-color);">Go to tool →</a></div>
                 </div>
             `;
         }
@@ -369,7 +369,7 @@ function displayPredictions(predictions, populationData) {
 
         // Add gnomAD frequency section
         if (popData.gnomad_genome_af !== null || popData.gnomad_exome_af !== null) {
-            html += '<h3 style="margin-top: 25px;">📊 Frequenze Popolazione (gnomAD)</h3>';
+            html += '<h3 style="margin-top: 25px;">📊 Population Frequencies (gnomAD)</h3>';
             html += '<div class="prediction-grid">';
 
             if (popData.gnomad_genome_af !== null && popData.gnomad_genome_af !== undefined) {
@@ -399,8 +399,8 @@ function displayPredictions(predictions, populationData) {
             html += `
                 <div class="prediction-item" style="grid-column: 1 / -1; background: var(--background); border-left: 4px solid var(--primary-color);">
                     <p style="margin: 0; font-size: 0.95rem;">
-                        <strong>Fonte dati:</strong> ${popData.data_source || 'MyVariant.info'}<br>
-                        <strong>Note:</strong> Frequenze alleliche da gnomAD v3. AF > 0.05 suggerisce variante comune (BA1). AF > 0.01 suggerisce variante polimorfica (BS1).
+                        <strong>Data source:</strong> ${popData.data_source || 'MyVariant.info'}<br>
+                        <strong>Notes:</strong> Allele frequencies from gnomAD v3. AF > 0.05 suggests common variant (BA1). AF > 0.01 suggests polymorphic variant (BS1).
                     </p>
                 </div>
             `;
@@ -411,7 +411,7 @@ function displayPredictions(predictions, populationData) {
 
     // Missense predictions
     if (predictions.missense && !predictions.missense.error) {
-        html += '<h3>Predittori Missense</h3><div class="prediction-grid">';
+        html += '<h3>Missense Predictors</h3><div class="prediction-grid">';
 
         for (const [tool, result] of Object.entries(predictions.missense)) {
             if (tool === 'aggregate') continue;
@@ -427,13 +427,13 @@ function displayPredictions(predictions, populationData) {
                 html += `<div class="prediction-score">PHRED: ${result.phred_score.toFixed(1)}</div>`;
             }
             if (result.prediction) {
-                html += `<div><strong>Predizione:</strong> ${result.prediction}</div>`;
+                html += `<div><strong>Prediction:</strong> ${result.prediction}</div>`;
             }
             if (result.interpretation) {
                 html += `<div style="margin-top: 8px; font-size: 0.9rem;">${result.interpretation}</div>`;
             }
             if (result.url) {
-                html += `<div style="margin-top: 10px;"><a href="${result.url}" target="_blank" style="color: var(--primary-color);">Vai al tool →</a></div>`;
+                html += `<div style="margin-top: 10px;"><a href="${result.url}" target="_blank" style="color: var(--primary-color);">Go to tool →</a></div>`;
             }
 
             html += '</div>';
@@ -443,9 +443,9 @@ function displayPredictions(predictions, populationData) {
         if (predictions.missense.aggregate) {
             const agg = predictions.missense.aggregate;
             html += `<div class="prediction-item" style="grid-column: 1 / -1; border-left-color: var(--success-color);">`;
-            html += `<h4>Consenso</h4>`;
+            html += `<h4>Consensus</h4>`;
             html += `<div><strong>${agg.consensus}</strong></div>`;
-            html += `<div style="margin-top: 8px;">${agg.pathogenic_predictors}/${agg.total_predictors} predittori suggeriscono patogenicità</div>`;
+            html += `<div style="margin-top: 8px;">${agg.pathogenic_predictors}/${agg.total_predictors} predictors suggest pathogenicity</div>`;
             if (agg.details && agg.details.length > 0) {
                 html += '<ul style="margin-top: 10px;">';
                 agg.details.forEach(detail => {
@@ -461,7 +461,7 @@ function displayPredictions(predictions, populationData) {
 
     // Splicing predictions
     if (predictions.splicing && !predictions.splicing.error) {
-        html += '<h3 style="margin-top: 25px;">Predittori Splicing</h3><div class="prediction-grid">';
+        html += '<h3 style="margin-top: 25px;">Splicing Predictors</h3><div class="prediction-grid">';
 
         for (const [tool, result] of Object.entries(predictions.splicing)) {
             if (tool === 'aggregate') continue;
@@ -477,7 +477,7 @@ function displayPredictions(predictions, populationData) {
                 html += `<div style="margin-top: 8px;">${result.interpretation}</div>`;
             }
             if (result.url) {
-                html += `<div style="margin-top: 10px;"><a href="${result.url}" target="_blank" style="color: var(--primary-color);">Vai al tool →</a></div>`;
+                html += `<div style="margin-top: 10px;"><a href="${result.url}" target="_blank" style="color: var(--primary-color);">Go to tool →</a></div>`;
             }
 
             html += '</div>';
@@ -487,7 +487,7 @@ function displayPredictions(predictions, populationData) {
         if (predictions.splicing.aggregate) {
             const agg = predictions.splicing.aggregate;
             html += `<div class="prediction-item" style="grid-column: 1 / -1; border-left-color: var(--success-color);">`;
-            html += `<h4>Consenso Splicing</h4>`;
+            html += `<h4>Splicing Consensus</h4>`;
             html += `<div><strong>${agg.consensus}</strong></div>`;
             if (agg.recommendation) {
                 html += `<div style="margin-top: 10px; font-style: italic;">${agg.recommendation}</div>`;
@@ -500,7 +500,7 @@ function displayPredictions(predictions, populationData) {
 
     // Synonymous predictions
     if (predictions.synonymous && !predictions.synonymous.error) {
-        html += '<h3 style="margin-top: 25px;">Predittori Varianti Sinonime</h3><div class="prediction-grid">';
+        html += '<h3 style="margin-top: 25px;">Synonymous Variant Predictors</h3><div class="prediction-grid">';
 
         for (const [tool, result] of Object.entries(predictions.synonymous)) {
             if (tool === 'aggregate') continue;
@@ -516,7 +516,7 @@ function displayPredictions(predictions, populationData) {
                 html += `<div style="margin-top: 8px; font-size: 0.9rem;">${result.interpretation}</div>`;
             }
             if (result.classification) {
-                html += `<div style="margin-top: 6px;"><strong>Classificazione MobiDetails:</strong> ${result.classification}</div>`;
+                html += `<div style="margin-top: 6px;"><strong>MobiDetails Classification:</strong> ${result.classification}</div>`;
             }
             if (result.note) {
                 html += `<div style="margin-top: 6px; color: var(--text-secondary); font-size: 0.85rem;">${result.note}</div>`;
@@ -536,10 +536,10 @@ function displayPredictions(predictions, populationData) {
             const isSyn = agg.is_synonymous;
             const borderColor = isSyn ? 'var(--warning-color)' : 'var(--success-color)';
             html += `<div class="prediction-item" style="grid-column: 1 / -1; border-left-color: ${borderColor};">`;
-            html += `<h4>Consenso Variante Sinonima</h4>`;
+            html += `<h4>Synonymous Variant Consensus</h4>`;
             html += `<div><strong>${agg.consensus}</strong></div>`;
             if (agg.acmg_criteria && agg.acmg_criteria.length > 0) {
-                html += `<div style="margin-top: 8px;"><strong>Criteri ACMG:</strong> ${agg.acmg_criteria.join(', ')}</div>`;
+                html += `<div style="margin-top: 8px;"><strong>ACMG Criteria:</strong> ${agg.acmg_criteria.join(', ')}</div>`;
             }
             if (agg.recommendation) {
                 html += `<div style="margin-top: 10px; font-style: italic; font-size: 0.9rem;">${agg.recommendation}</div>`;
@@ -574,7 +574,7 @@ function displayPredictions(predictions, populationData) {
                 html += `<div style="margin-top: 8px; font-size: 0.9rem;">${regulome.interpretation}</div>`;
             }
             if (regulome.url) {
-                html += `<div style="margin-top: 10px;"><a href="${regulome.url}" target="_blank" style="color: var(--primary-color);">Vai a RegulomeDB →</a></div>`;
+                html += `<div style="margin-top: 10px;"><a href="${regulome.url}" target="_blank" style="color: var(--primary-color);">Go to RegulomeDB →</a></div>`;
             }
             html += '</div>';
         }
@@ -586,9 +586,9 @@ function displayPredictions(predictions, populationData) {
             html += `<h4>5'UTR Analyzer</h4>`;
             const uorf = utr5.uorf_impact || {};
             if (uorf.potential_uorf_creation) {
-                html += `<div style="color: var(--danger-color); font-weight: 600;">⚠ Possibile creazione uORF</div>`;
+                html += `<div style="color: var(--danger-color); font-weight: 600;">⚠ Possible uORF creation</div>`;
             } else if (uorf.potential_uorf_disruption) {
-                html += `<div style="color: var(--warning-color); font-weight: 600;">⚠ Possibile disruzione uORF</div>`;
+                html += `<div style="color: var(--warning-color); font-weight: 600;">⚠ Possible uORF disruption</div>`;
             }
             if (utr5.interpretation) {
                 html += `<div style="margin-top: 8px; font-size: 0.9rem;">${utr5.interpretation}</div>`;
@@ -605,7 +605,7 @@ function displayPredictions(predictions, populationData) {
             html += `<h4>3'UTR Analyzer</h4>`;
             const polya = utr3.polyadenylation_impact || {};
             if (polya.potential_polya_disruption) {
-                html += `<div style="color: var(--danger-color); font-weight: 600;">⚠ Possibile disruzione segnale pA</div>`;
+                html += `<div style="color: var(--danger-color); font-weight: 600;">⚠ Possible polyadenylation signal disruption</div>`;
             }
             if (utr3.interpretation) {
                 html += `<div style="margin-top: 8px; font-size: 0.9rem;">${utr3.interpretation}</div>`;
@@ -623,10 +623,10 @@ function displayPredictions(predictions, populationData) {
         if (predictions.utr.aggregate) {
             const agg = predictions.utr.aggregate;
             html += `<div class="prediction-item" style="grid-column: 1 / -1; border-left-color: var(--primary-color);">`;
-            html += `<h4>Consenso ${utrRegion}</h4>`;
+            html += `<h4>${utrRegion} Consensus</h4>`;
             html += `<div><strong>${agg.consensus}</strong></div>`;
             if (agg.acmg_criteria && agg.acmg_criteria.length > 0) {
-                html += `<div style="margin-top: 8px;"><strong>Criteri ACMG:</strong> ${agg.acmg_criteria.join(', ')}</div>`;
+                html += `<div style="margin-top: 8px;"><strong>ACMG Criteria:</strong> ${agg.acmg_criteria.join(', ')}</div>`;
             }
             if (agg.recommendation) {
                 html += `<div style="margin-top: 10px; font-style: italic; font-size: 0.9rem;">${agg.recommendation}</div>`;
@@ -639,14 +639,14 @@ function displayPredictions(predictions, populationData) {
 
     // Indel predictions
     if (predictions.indel && !predictions.indel.error) {
-        html += '<h3 style="margin-top: 25px;">Analisi Indel</h3><div class="prediction-grid">';
+        html += '<h3 style="margin-top: 25px;">Indel Analysis</h3><div class="prediction-grid">';
 
         const indelAnalysis = predictions.indel.IndelAnalyzer;
         if (indelAnalysis && !indelAnalysis.error) {
             html += `<div class="prediction-item">`;
-            html += `<h4>Classificazione Indel</h4>`;
-            html += `<div><strong>Tipo:</strong> ${indelAnalysis.variant_type}</div>`;
-            html += `<div><strong>Frameshift:</strong> ${indelAnalysis.is_frameshift ? 'Sì' : 'No'}</div>`;
+            html += `<h4>Indel Classification</h4>`;
+            html += `<div><strong>Type:</strong> ${indelAnalysis.variant_type}</div>`;
+            html += `<div><strong>Frameshift:</strong> ${indelAnalysis.is_frameshift ? 'Yes' : 'No'}</div>`;
             html += `<div style="margin-top: 10px;">${indelAnalysis.interpretation}</div>`;
             html += '</div>';
         }
@@ -655,10 +655,10 @@ function displayPredictions(predictions, populationData) {
         if (predictions.indel.aggregate) {
             const agg = predictions.indel.aggregate;
             html += `<div class="prediction-item" style="border-left-color: var(--success-color);">`;
-            html += `<h4>Consenso Indel</h4>`;
+            html += `<h4>Indel Consensus</h4>`;
             html += `<div><strong>${agg.consensus}</strong></div>`;
             if (agg.acmg_criteria && agg.acmg_criteria.length > 0) {
-                html += `<div style="margin-top: 8px;"><strong>Criteri ACMG:</strong> ${agg.acmg_criteria.join(', ')}</div>`;
+                html += `<div style="margin-top: 8px;"><strong>ACMG Criteria:</strong> ${agg.acmg_criteria.join(', ')}</div>`;
             }
             if (agg.recommendation) {
                 html += `<div style="margin-top: 10px; font-style: italic;">${agg.recommendation}</div>`;
@@ -669,7 +669,7 @@ function displayPredictions(predictions, populationData) {
         html += '</div>';
     }
 
-    container.innerHTML = html || '<p>Nessuna predizione disponibile.</p>';
+    container.innerHTML = html || '<p>No predictions available.</p>';
 }
 
 function displayLiterature(literature) {
@@ -677,17 +677,17 @@ function displayLiterature(literature) {
     let html = '';
 
     if (literature.error) {
-        html = `<p>Errore nella ricerca letteratura: ${literature.error}</p>`;
+        html = `<p>Error searching literature: ${literature.error}</p>`;
     } else {
-        html += `<p><strong>Totale articoli trovati:</strong> ${literature.total_articles}</p>`;
+        html += `<p><strong>Total articles found:</strong> ${literature.total_articles}</p>`;
 
         if (literature.search_url) {
-            html += `<p><a href="${literature.search_url}" target="_blank" class="link-button" style="display: inline-block; width: auto;">Cerca su PubMed →</a></p>`;
+            html += `<p><a href="${literature.search_url}" target="_blank" class="link-button" style="display: inline-block; width: auto;">Search PubMed →</a></p>`;
         }
 
         // Functional studies
         if (literature.functional_studies && literature.functional_studies.length > 0) {
-            html += '<h3 style="margin-top: 25px;">Studi Funzionali</h3>';
+            html += '<h3 style="margin-top: 25px;">Functional Studies</h3>';
             literature.functional_studies.forEach(article => {
                 html += formatArticle(article, 'functional');
             });
@@ -695,7 +695,7 @@ function displayLiterature(literature) {
 
         // Case reports
         if (literature.case_reports && literature.case_reports.length > 0) {
-            html += '<h3 style="margin-top: 25px;">Case Report</h3>';
+            html += '<h3 style="margin-top: 25px;">Case Reports</h3>';
             literature.case_reports.forEach(article => {
                 html += formatArticle(article, 'case');
             });
@@ -703,14 +703,14 @@ function displayLiterature(literature) {
 
         // Reviews
         if (literature.reviews && literature.reviews.length > 0) {
-            html += '<h3 style="margin-top: 25px;">Review</h3>';
+            html += '<h3 style="margin-top: 25px;">Reviews</h3>';
             literature.reviews.forEach(article => {
                 html += formatArticle(article, 'review');
             });
         }
     }
 
-    container.innerHTML = html || '<p>Nessun articolo trovato.</p>';
+    container.innerHTML = html || '<p>No articles found.</p>';
 }
 
 function formatArticle(article, type) {
@@ -743,7 +743,7 @@ function displayACMG(acmg) {
     // Pathogenic evidence
     if (acmg.pathogenic && acmg.pathogenic.length > 0) {
         html += '<div class="acmg-section">';
-        html += '<h4 style="color: var(--danger-color);">Evidenze Patogeniche</h4>';
+        html += '<h4 style="color: var(--danger-color);">Pathogenic Evidence</h4>';
         acmg.pathogenic.forEach(ev => {
             html += `
                 <div class="acmg-item">
@@ -760,7 +760,7 @@ function displayACMG(acmg) {
     // Benign evidence
     if (acmg.benign && acmg.benign.length > 0) {
         html += '<div class="acmg-section">';
-        html += '<h4 style="color: var(--success-color);">Evidenze Benigne</h4>';
+        html += '<h4 style="color: var(--success-color);">Benign Evidence</h4>';
         acmg.benign.forEach(ev => {
             html += `
                 <div class="acmg-item">
@@ -774,7 +774,7 @@ function displayACMG(acmg) {
     }
 
     if (acmg.pathogenic.length === 0 && acmg.benign.length === 0) {
-        html += '<p>Nessuna evidenza ACMG disponibile al momento. I dati di popolazione e gli studi funzionali sono necessari per una classificazione completa.</p>';
+        html += '<p>No ACMG evidence available. Population data and functional studies are required for complete classification.</p>';
     }
 
     container.innerHTML = html;
@@ -784,7 +784,7 @@ function formatStudies(studies) {
     if (!studies || studies.length === 0) return '';
 
     let html = '<div style="margin-top: 10px; padding-left: 20px;">';
-    html += '<strong>Studi rilevanti:</strong><ul style="margin-top: 5px;">';
+    html += '<strong>Relevant studies:</strong><ul style="margin-top: 5px;">';
     studies.forEach(study => {
         html += `<li><a href="${study.url}" target="_blank">${study.title} (PMID: ${study.pmid})</a></li>`;
     });
