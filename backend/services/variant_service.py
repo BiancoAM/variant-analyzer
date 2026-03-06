@@ -84,6 +84,9 @@ class VariantAnalysisService:
             population_data
         )
 
+        # Enrich prediction results with actual scores from MyVariant.info
+        prediction_results = self._enrich_predictions_with_myvariant(prediction_results, population_data)
+
         # Compile complete analysis
         analysis = {
             "variant": variant,
@@ -299,6 +302,107 @@ class VariantAnalysisService:
                 "error": str(e),
                 "found": False
             }
+
+    def _enrich_predictions_with_myvariant(
+        self,
+        predictions: Dict[str, Any],
+        population_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Fill in real scores from MyVariant.info into the prediction results"""
+        missense = predictions.get('missense', {})
+        if not missense:
+            return predictions
+
+        sift_score = population_data.get('sift_score')
+        sift_pred = population_data.get('sift_prediction')
+        pp2_score = population_data.get('polyphen2_score')
+        pp2_pred = population_data.get('polyphen2_prediction')
+        revel_score = population_data.get('revel_score')
+        cadd_phred = population_data.get('cadd_phred')
+        cadd_raw = population_data.get('cadd_raw')
+        cadd_interp = population_data.get('cadd_interpretation')
+
+        if 'SIFT' in missense and sift_score is not None:
+            missense['SIFT']['score'] = sift_score
+            missense['SIFT']['prediction'] = sift_pred
+            missense['SIFT']['interpretation'] = (
+                'Deleterious' if sift_score <= 0.05 else 'Tolerated'
+            )
+
+        if 'PolyPhen2' in missense and pp2_score is not None:
+            missense['PolyPhen2']['score'] = pp2_score
+            missense['PolyPhen2']['prediction'] = pp2_pred
+            if pp2_score >= 0.85:
+                missense['PolyPhen2']['interpretation'] = 'Probably damaging'
+            elif pp2_score >= 0.15:
+                missense['PolyPhen2']['interpretation'] = 'Possibly damaging'
+            else:
+                missense['PolyPhen2']['interpretation'] = 'Benign'
+
+        if 'REVEL' in missense and revel_score is not None:
+            missense['REVEL']['score'] = revel_score
+            missense['REVEL']['interpretation'] = (
+                'Likely pathogenic' if revel_score >= 0.5 else 'Likely benign'
+            )
+
+        if 'CADD' in missense and cadd_phred is not None:
+            missense['CADD']['phred_score'] = cadd_phred
+            missense['CADD']['raw_score'] = cadd_raw
+            missense['CADD']['interpretation'] = cadd_interp
+
+        # Recalculate aggregate with real scores
+        missense['aggregate'] = self._aggregate_missense(missense)
+        predictions['missense'] = missense
+        return predictions
+
+    def _aggregate_missense(self, missense: Dict[str, Any]) -> Dict[str, Any]:
+        pathogenic_count = 0
+        total_count = 0
+        interpretations = []
+
+        sift = missense.get('SIFT', {})
+        if sift.get('score') is not None:
+            total_count += 1
+            if sift['score'] <= 0.05:
+                pathogenic_count += 1
+                interpretations.append(f"SIFT: deleterious ({sift['score']:.3f})")
+
+        pp2 = missense.get('PolyPhen2', {})
+        if pp2.get('score') is not None:
+            total_count += 1
+            if pp2['score'] >= 0.85:
+                pathogenic_count += 1
+                interpretations.append(f"PolyPhen-2: probably damaging ({pp2['score']:.3f})")
+
+        cadd = missense.get('CADD', {})
+        if cadd.get('phred_score') is not None:
+            total_count += 1
+            if cadd['phred_score'] >= 20:
+                pathogenic_count += 1
+                interpretations.append(f"CADD: deleterious (PHRED {cadd['phred_score']:.1f})")
+
+        revel = missense.get('REVEL', {})
+        if revel.get('score') is not None:
+            total_count += 1
+            if revel['score'] >= 0.5:
+                pathogenic_count += 1
+                interpretations.append(f"REVEL: likely pathogenic ({revel['score']:.3f})")
+
+        if total_count == 0:
+            consensus = "No data available (variant not in MyVariant.info)"
+        elif pathogenic_count / total_count >= 0.75:
+            consensus = "Strong evidence for pathogenicity"
+        elif pathogenic_count / total_count >= 0.5:
+            consensus = "Moderate evidence for pathogenicity"
+        else:
+            consensus = "Likely benign or uncertain"
+
+        return {
+            "consensus": consensus,
+            "pathogenic_predictors": pathogenic_count,
+            "total_predictors": total_count,
+            "details": interpretations
+        }
 
     def _generate_acmg_evidence(
         self,
