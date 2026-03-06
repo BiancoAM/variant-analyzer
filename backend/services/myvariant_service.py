@@ -124,6 +124,29 @@ class MyVariantService:
         - clinvar: clinical significance
         """
         try:
+            # If rsID is provided, query directly by rsID (most reliable)
+            rsid = variant.get('rsid')
+            if rsid and rsid.startswith('rs'):
+                logger.info(f"Querying MyVariant by rsID: {rsid}")
+                loop = asyncio.get_event_loop()
+                result = await loop.run_in_executor(
+                    None,
+                    lambda: self.mv.query(rsid, fields=','.join([
+                        'dbsnp.rsid', 'gnomad_genome.af', 'gnomad_genome.af_popmax',
+                        'gnomad_exome.af', 'gnomad_exome.af_popmax',
+                        'cadd.phred', 'cadd.raw',
+                        'dbnsfp.sift.score', 'dbnsfp.sift.pred',
+                        'dbnsfp.polyphen2.hdiv.score', 'dbnsfp.polyphen2.hdiv.pred',
+                        'dbnsfp.revel.score', 'dbnsfp.vest4.score',
+                        'clinvar.rcv', 'clinvar.clinical_significance', 'clinvar.review_status'
+                    ]), size=1)
+                )
+                if result and result.get('hits'):
+                    logger.info(f"Found variant by rsID: {rsid}")
+                    return self._parse_myvariant_result(result['hits'][0])
+                logger.warning(f"rsID {rsid} not found in MyVariant.info")
+                return self._empty_result()
+
             # Query MyVariant with specific fields
             fields = [
                 'dbsnp.rsid',

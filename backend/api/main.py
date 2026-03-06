@@ -56,6 +56,7 @@ class VariantInput(BaseModel):
     transcript: Optional[str] = Field(None, description="Transcript ID (optional)")
     hgvs_c: Optional[str] = Field(None, description="HGVS coding notation (optional)")
     hgvs_p: Optional[str] = Field(None, description="HGVS protein notation (optional)")
+    rsid: Optional[str] = Field(None, description="dbSNP rsID (optional, e.g. rs777038090)")
 
     class Config:
         schema_extra = {

@@ -85,7 +85,8 @@ document.getElementById('variantForm').addEventListener('submit', async (e) => {
         reference: document.getElementById('reference').value.trim().toUpperCase(),
         alternate: document.getElementById('alternate').value.trim().toUpperCase(),
         hgvs_c: document.getElementById('hgvs_c').value.trim() || null,
-        hgvs_p: document.getElementById('hgvs_p').value.trim() || null
+        hgvs_p: document.getElementById('hgvs_p').value.trim() || null,
+        rsid: document.getElementById('rsid').value.trim() || null
     };
 
     // Show loading spinner
