@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_BASE_URL = '/api/v1';
 
 // Example variants (hg38/GRCh38 coordinates - automatic conversion to hg19 when needed)
 const examples = {
