@@ -84,13 +84,16 @@ class LiteratureSearchInput(BaseModel):
     max_results: int = Field(20, description="Maximum results", le=50)
 
 
-# Dependency for service injection
-def get_analysis_service() -> VariantAnalysisService:
-    """Dependency to get analysis service instance"""
-    pubmed_email = os.getenv('NCBI_EMAIL', 'user@example.com')
-    pubmed_api_key = os.getenv('NCBI_API_KEY')
+# Singleton service instance (initialized once at startup)
+_analysis_service: VariantAnalysisService = None
 
-    return VariantAnalysisService(pubmed_email, pubmed_api_key)
+def get_analysis_service() -> VariantAnalysisService:
+    global _analysis_service
+    if _analysis_service is None:
+        pubmed_email = os.getenv('NCBI_EMAIL', 'user@example.com')
+        pubmed_api_key = os.getenv('NCBI_API_KEY')
+        _analysis_service = VariantAnalysisService(pubmed_email, pubmed_api_key)
+    return _analysis_service
 
 
 @app.get("/")

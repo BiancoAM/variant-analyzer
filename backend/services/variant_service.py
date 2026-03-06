@@ -150,7 +150,7 @@ class VariantAnalysisService:
 
         # Always run CADD for general deleteriousness
         try:
-            from ..predictors.missense_predictors import CADDPredictor
+            from predictors.missense_predictors import CADDPredictor
             cadd = CADDPredictor()
             results['CADD'] = await cadd.predict(variant)
         except Exception as e:
